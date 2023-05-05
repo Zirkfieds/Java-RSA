@@ -72,7 +72,7 @@ public class NumTools {
         if (modulus == 1L) {
             return 0;
         }
-        long result = 1;
+        long result = 1L;
         base = base % modulus;
         while (exponent > 0) {
             if (exponent % 2 == 1) {
@@ -83,5 +83,6 @@ public class NumTools {
         }
         return result;
     }
+
 }
 

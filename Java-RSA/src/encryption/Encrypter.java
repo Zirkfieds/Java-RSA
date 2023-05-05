@@ -12,20 +12,21 @@ public class Encrypter {
         this.k = k;
     }
 
-    public String operate(String text) {
-        // TODO: Fix when p and q are very big by storing the actual hex array
-        // TODO: Fix unsupported encoding issues (Chinese characters etc.)
+    public NumString operate(NumString text) {
+
         long k1, k2;
         k1 = k.getProd();
         k2 = k.getK();
         System.out.println(k1 + " " + k2 + " " + text);
-        StringBuilder enc = new StringBuilder();
+
+        NumString ns = new NumString();
+
         for (int i = 0; i < text.length(); i++) {
             long newChar = NumTools.modExp(text.charAt(i), k2, k1);
-//            System.out.println((long)text.charAt(i) + " " +  (long) newChar);
-            enc.append((char)newChar);
+            ns.append(newChar);
         }
-        return enc.toString();
+        ns.syncStrHex();
+        return ns;
     }
 
 

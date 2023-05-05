@@ -1,41 +1,59 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NumString {
-    private String strString;
-    private int[] numString;
+    private ArrayList<Long> numString;
+    private String hexString;
+
+    public NumString() {
+        numString = new ArrayList<>();
+        hexString = "";
+    }
 
     public NumString(String string) {
-        this.strString = string;
         int len = string.length();
-        numString = new int[len];
+        numString = new ArrayList<>();
         for (int i = 0; i < len; i++) {
-            numString[i] = string.charAt(i);
+            numString.add((long)string.charAt(i));
         }
+        hexString = StringTools.lng2hex(numString);
     }
 
-    public void setStrString(String strString) {
-        this.strString = strString;
+    public NumString(NumString nstring) {
+        this.numString = nstring.getNumString();
+        this.hexString = nstring.getHexString();
     }
 
-    public void setNumString(int[] numString) {
-        this.numString = numString;
+    public void syncStrHex() {
+        this.hexString = StringTools.lng2hex(numString);
     }
 
-    public String getStrString() {
-        return strString;
-    }
-
-    public int[] getNumString() {
+    public ArrayList<Long> getNumString() {
         return numString;
+    }
+
+    public String getHexString() {
+        return hexString;
+    }
+
+    public boolean append(long ch) {
+        return numString.add((long)ch);
     }
 
     @Override
     public String toString() {
         return "NumString{" +
-                "strString='" + strString + '\'' +
-                ", numString=" + Arrays.toString(numString) +
+                "numString=" + numString +
                 '}';
+    }
+
+    public int length() {
+        return numString.size();
+    }
+
+    public long charAt(int index) {
+        return (long)(numString.get(index));
     }
 }
