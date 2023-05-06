@@ -1,4 +1,4 @@
-package key.hash;
+package key;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
