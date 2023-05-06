@@ -1,6 +1,6 @@
 package encryption;
 
-import utils.MessagePair;
+import utils.RSAKeyPair;
 
 import java.math.BigInteger;
 
@@ -10,7 +10,7 @@ public class RSAEncryption {
     private BigInteger n, e;
     private BigInteger cipher;
 
-    public RSAEncryption(BigInteger message, MessagePair<BigInteger> publicKey) {
+    public RSAEncryption(BigInteger message, RSAKeyPair<BigInteger> publicKey) {
         msg = message;
         this.n = publicKey.getMsgl();
         this.e = publicKey.getMsgr();

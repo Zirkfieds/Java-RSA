@@ -1,6 +1,6 @@
 package key;
 
-import utils.MessagePair;
+import utils.RSAKeyPair;
 
 import java.math.BigInteger;
 
@@ -13,7 +13,7 @@ public class Authentication {
     public Authentication(
             BigInteger cipherText,
             BigInteger cipherSignature,
-            MessagePair<BigInteger> keyA) {
+            RSAKeyPair<BigInteger> keyA) {
         this.cipherText = cipherText;
         this.cipherSignature = cipherSignature;
         this.n = keyA.getMsgl();

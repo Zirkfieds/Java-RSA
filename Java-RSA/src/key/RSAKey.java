@@ -1,6 +1,6 @@
 package key;
 
-import utils.MessagePair;
+import utils.RSAKeyPair;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -27,12 +27,12 @@ public class RSAKey {
         d = e.modInverse(phi);
     }
 
-    public MessagePair<BigInteger> getPublicKeyPair() {
-        return new MessagePair<>(n, e);
+    public RSAKeyPair<BigInteger> getPublicKeyPair() {
+        return new RSAKeyPair<>(n, e);
     }
 
-    public MessagePair<BigInteger> getPrivateKeyPair() {
-        return new MessagePair<>(n, d);
+    public RSAKeyPair<BigInteger> getPrivateKeyPair() {
+        return new RSAKeyPair<>(n, d);
     }
 
     @Override

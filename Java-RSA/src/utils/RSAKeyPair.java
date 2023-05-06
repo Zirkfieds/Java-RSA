@@ -1,9 +1,9 @@
 package utils;
 
-public class MessagePair<T> {
+public class RSAKeyPair<T> {
     private T msgl, msgr;
 
-    public MessagePair(T msgl, T msgr) {
+    public RSAKeyPair(T msgl, T msgr) {
         this.msgl = msgl;
         this.msgr = msgr;
     }
@@ -22,5 +22,10 @@ public class MessagePair<T> {
 
     public void setMsgr(T msgr) {
         this.msgr = msgr;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + msgl + ", " + msgr + ")";
     }
 }

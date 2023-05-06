@@ -5,48 +5,39 @@ import key.DigitalSignature;
 import key.RSAKey;
 import key.SHA256;
 import org.testng.annotations.Test;
-import utils.MessagePair;
+import utils.KeyManager;
+import utils.RSAKeyPair;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class RSATest {
 
     private BigInteger a, b;
 
     @Test
-    public void makeKey() {
-
-        RSAKey k = new RSAKey();
-        System.out.println(k);
-
-        String message = "Hello World!你好世界！";
-
-        RSAEncryption enc = new RSAEncryption(new BigInteger(message.getBytes()), k.getPublicKeyPair());
-        BigInteger cbytes = enc.getCipher();
-
-        RSADecryption dec = new RSADecryption(cbytes, k.getPrivateKeyPair());
-        String pstr = dec.getPlainStr();
-
-        System.out.println(message.equals(pstr));
-
-    }
-
-    @Test
     public void auth(){
 
-        // A is the sender, B is the server/receiver
-        RSAKey kA = new RSAKey();
-        RSAKey kB = new RSAKey();
+        KeyManager.initFnMap();
 
-        MessagePair<BigInteger> publicKeyA = kA.getPublicKeyPair();
-        MessagePair<BigInteger> privateKeyA = kA.getPrivateKeyPair();
+        // A is the sender, B is the receiver
+        KeyManager kA = new KeyManager();
+        KeyManager kB = new KeyManager();
+        kA.generateKeys();
+        kB.generateKeys();
 
-        MessagePair<BigInteger> publicKeyB = kB.getPublicKeyPair();
-        MessagePair<BigInteger> privateKeyB = kB.getPrivateKeyPair();
+        RSAKeyPair<BigInteger> publicKeyA = kA.getPublicKey();
+        RSAKeyPair<BigInteger> privateKeyA = kA.getPrivateKey();
+
+        RSAKeyPair<BigInteger> publicKeyB = kB.getPublicKey();
+        RSAKeyPair<BigInteger> privateKeyB = kB.getPrivateKey();
 
         String message = "Hello World!";
-        BigInteger plainText = new BigInteger(message.getBytes());
+        // Encode the original message in base64
+        String encodedMessage = Base64.getEncoder().encodeToString(message.getBytes());
+        BigInteger plainText = new BigInteger(encodedMessage.getBytes());
+        System.out.println(message + " -> " + encodedMessage);
 
         // A encrypts the plain text using B's public key
         RSAEncryption encMsg = new RSAEncryption(plainText, publicKeyB);
@@ -62,12 +53,25 @@ public class RSATest {
             System.out.println("Verified.");
             // B decrypts the cipher text using B's private key if the message is verified
             RSADecryption dec = new RSADecryption(cipherText, privateKeyB);
-            BigInteger decryptedPlainText = dec.getPlain();
-            System.out.println(dec.getPlainStr());
+            // Decode the deciphered message
+            String encodedReceivedMessage = dec.getPlainStr();
+            System.out.println(encodedReceivedMessage + " -> " + new String(Base64.getDecoder().decode(encodedReceivedMessage)));
         } else {
             System.out.println("Not Verified.");
         }
 
+    }
+
+    @Test
+    public void keyManagerTest() {
+        KeyManager.initFnMap();
+        KeyManager k = new KeyManager();
+        k.generateKeys();
+        k.writeKeys();
+        k.clearKeys();
+        k.readKeys("000000-.b64");
+        k.readKeys("000000+.b64");
+        System.out.println(k);
     }
 
     @Test

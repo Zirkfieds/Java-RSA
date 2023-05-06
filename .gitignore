@@ -2,3 +2,4 @@
 *.xml
 Java-RSA/Java-RSA.iml
 *.class
+*.b64

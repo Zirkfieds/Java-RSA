@@ -1,6 +1,6 @@
 package key;
 
-import utils.MessagePair;
+import utils.RSAKeyPair;
 
 import java.math.BigInteger;
 
@@ -9,7 +9,7 @@ public class DigitalSignature {
     private BigInteger cipherText;
     private BigInteger n, d;
 
-    public DigitalSignature(BigInteger cipherText, MessagePair<BigInteger> key) {
+    public DigitalSignature(BigInteger cipherText, RSAKeyPair<BigInteger> key) {
         this.cipherText = cipherText;
         this.n = key.getMsgl();
         this.d = key.getMsgr();

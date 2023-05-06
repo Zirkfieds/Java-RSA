@@ -1,6 +1,6 @@
 package encryption;
 
-import utils.MessagePair;
+import utils.RSAKeyPair;
 
 import java.math.BigInteger;
 
@@ -10,7 +10,7 @@ public class RSADecryption {
     private BigInteger n, d;
     private BigInteger plain;
     
-    public RSADecryption(BigInteger message, MessagePair<BigInteger> privateKey) {
+    public RSADecryption(BigInteger message, RSAKeyPair<BigInteger> privateKey) {
         this.cipher = message;
 
         this.n = privateKey.getMsgl();
