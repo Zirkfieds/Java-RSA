@@ -15,7 +15,7 @@ public class RSAKey {
     protected BigInteger phi;
     protected BigInteger d;
 
-    private final static int KEY_SIZE = 1024;
+    private final static int KEY_SIZE = 2048;
     private final static Random RNG = new SecureRandom();
 
     public RSAKey() {

@@ -12,10 +12,10 @@ import java.util.Map;
 public class KeyManager {
 
     private RSAKey key;
-    private RSAKeyPair<BigInteger> publicKey, privateKey;
+    private RSAKeyPair<BigInteger> publicKey, privateKey, thirdPartyKey;
     private String timestamp;
 
-    private static final String fnReg = "\\d+[+|-].b64";
+    private static final String fnReg = "[0-9AB]+[+|-].b64";
 
     private static final Map<String, String> fnMap = new HashMap<>();
 
@@ -39,12 +39,25 @@ public class KeyManager {
         this.key = null;
         this.publicKey = null;
         this.privateKey = null;
+        this.thirdPartyKey = null;
         this.timestamp = null;
         System.out.println("Stored keys cleared.");
     }
 
     public boolean checkKeys() {
         return this.publicKey != null && this.privateKey != null;
+    }
+
+    public void setPublicKey(RSAKeyPair<BigInteger> publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public void setPrivateKey(RSAKeyPair<BigInteger> privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setThirdPartyKey(RSAKeyPair<BigInteger> thirdPartyKey) {
+        this.thirdPartyKey = thirdPartyKey;
     }
 
     public RSAKeyPair<BigInteger> getPublicKey() {
@@ -55,12 +68,18 @@ public class KeyManager {
         return privateKey;
     }
 
-    public boolean readKeys(String fn) {
+    public RSAKeyPair<BigInteger> getThirdPartyKey() {
+        return thirdPartyKey;
+    }
+
+    public int readKeys(String fn, boolean isThirdParty) {
 
         if (!fn.matches(KeyManager.fnReg)) {
             System.out.println("Invalid filename.");
-            return false;
+            return 0;
         }
+
+        int flag = 0;
 
         try {
             FileInputStream fi = new FileInputStream(fn);
@@ -69,23 +88,34 @@ public class KeyManager {
             String[] keys = keyString.split("@");
             if (keys.length != 2) {
                 System.out.println("Compromised .b64 file.");
-                return false;
+                return 0;
             }
-            System.out.println(Arrays.toString(keys));
 
             if (fn.charAt(6) == '-') {
                 this.privateKey = new RSAKeyPair<>(new BigInteger(keys[0]), new BigInteger(keys[1]));
+                flag = -1;
             } else {
-                this.publicKey = new RSAKeyPair<>(new BigInteger(keys[0]), new BigInteger(keys[1]));
+                if (isThirdParty) {
+                    this.thirdPartyKey = new RSAKeyPair<>(new BigInteger(keys[0]), new BigInteger(keys[1]));
+                } else {
+                    this.publicKey = new RSAKeyPair<>(new BigInteger(keys[0]), new BigInteger(keys[1]));
+                }
+                flag = 1;
             }
 
             timestamp = fn.substring(0, 6);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return 0;
         }
-        return true;
+        return flag;
+    }
+
+    public String getKeyFileName(boolean isPrivateKey) {
+        return timestamp.substring(timestamp.length() - 6) +
+                ((isPrivateKey) ? fnMap.get("priv") : fnMap.get("pub")) +
+                ".b64";
     }
 
     public boolean writeKeys() {
@@ -95,9 +125,8 @@ public class KeyManager {
             return false;
         }
 
-        // TODO: Enable timestamp in filename after file selector GUI is implemented
-//        String baseFn = timestamp.substring(timestamp.length() - 6) + "_";
-        String baseFn = "000000";
+        String baseFn = timestamp.substring(timestamp.length() - 6);
+
         String privFn = baseFn + fnMap.get("priv");
         String pubFn = baseFn + fnMap.get("pub");
 
@@ -128,6 +157,7 @@ public class KeyManager {
         return "KeyManager{" +
                 "publicKey=" + publicKey.toString() +
                 ", privateKey=" + privateKey.toString() +
+                ", thirdPartyKey=" + thirdPartyKey.toString() +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }
